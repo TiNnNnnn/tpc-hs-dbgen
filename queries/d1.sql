@@ -1,9 +1,6 @@
--- $ID$
--- TPC-H/TPC-R Pricing Summary Report Query (Q1)
--- Functional Query Definition
--- Approved February 1998
-:x
-:o
+-- using default substitutions
+
+
 select
 	l_returnflag,
 	l_linestatus,
@@ -18,7 +15,7 @@ select
 from
 	lineitem
 where
-	l_shipdate <= date '1998-12-01' - interval ':1' day
+	l_shipdate <= date '1998-12-01' - interval '90' day
 group by
 	l_returnflag,
 	l_linestatus

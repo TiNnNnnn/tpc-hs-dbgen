@@ -1,9 +1,6 @@
--- $ID$
--- TPC-H/TPC-R Large Volume Customer Query (Q18)
--- Function Query Definition
--- Approved February 1998
-:x
-:o
+-- using default substitutions
+
+
 select
 	c_name,
 	c_custkey,
@@ -23,7 +20,7 @@ where
 			lineitem
 		group by
 			l_orderkey having
-				sum(l_quantity) > :1
+				sum(l_quantity) > 300
 	)
 	and c_custkey = o_custkey
 	and o_orderkey = l_orderkey

@@ -217,19 +217,20 @@ e_str(distribution *d, int min, int max, int stream, char *dest)
 
 
 /*
- * return the string associate with the LSB of a uniformly selected
- * long in [1, max] where max is determined by the distribution
- * being queried
+ * 从指定的分布（distribution）结构中随机选择一个字符串，
+ * 选择的方式是生成一个均匀分布的随机数，并根据累计权重找到对应的字符串。
  */
 int
 pick_str(distribution *s, int c, char *target)
 {
     long      i = 0;
     DSS_HUGE      j;
-
+    /*生成一个随机数 j，范围在 [1, 最大累计权重] 之间*/
     RANDOM(j, 1, s->list[s->count - 1].weight, c);
+    /*在分布列表中查找第一个累计权重大于等于 j 的元素*/
     while (s->list[i].weight < j)
         i++;
+    /*复制选中的文本到目标字符串*/
     strcpy(target, s->list[i].text);
     return(i);
 }
@@ -286,9 +287,9 @@ julian(long date)
 }
 
 /*
-* load a distribution from a flat file into the target structure;
-* should be rewritten to allow multiple dists in a file
-*/
+ * 从平面文件中加载一个分布（distribution）到目标结构中；
+ * 目前只能加载单个分布，应该重写以支持在一个文件中加载多个分布。
+ */
 void
 read_dist(char *path, char *name, distribution *target)
 {
@@ -300,18 +301,18 @@ long      weight,
          count = 0,
          name_set = 0;
 
-    if (d_path == NULL)
-		{
+    if (d_path == NULL){
 		sprintf(line, "%s%c%s", 
 			env_config(CONFIG_TAG, CONFIG_DFLT), PATH_SEP, path);
 		fp = fopen(line, "r");
 		OPEN_CHECK(fp, line);
-		}
-	else
-		{
+	}
+	else{
 		fp = fopen(d_path, "r");
 		OPEN_CHECK(fp, d_path);
-		}
+	}
+
+    /*逐行读取文件内容*/
     while (fgets(line, sizeof(line), fp) != NULL)
         {
         if ((c = strchr(line, '\n')) != NULL)
@@ -320,7 +321,7 @@ long      weight,
             *c = '\0';
         if (*line == '\0')
             continue;
-
+        /* 解析“BEGIN <name>”，确定是否进入目标分布数据块*/
         if (!name_set)
             {
             if (dsscasecmp(strtok(line, "\n\t "), "BEGIN"))
@@ -332,6 +333,7 @@ long      weight,
             }
         else
             {
+            /*遇到“END”表示分布数据读取结束*/
             if (!dssncasecmp(line, "END", 3))
                 {
                 fclose(fp);
@@ -339,11 +341,12 @@ long      weight,
                 }
             }
 
+        /*解析格式“<文本>|<权重>”*/
         if (sscanf(line, "%[^|]|%ld", token, &weight) != 2)
             continue;
-
-        if (!dsscasecmp(token, "count"))
-            {
+        /*如果解析到“count”，分配存储空间，count表示该分布中有多少个文本项，在begin的下一行，
+          实际数据的上一行*/
+        if (!dsscasecmp(token, "count")){
             target->count = weight;
             target->list =
                 (set_member *)
@@ -351,17 +354,20 @@ long      weight,
             MALLOC_CHECK(target->list);
             target->max = 0;
             continue;
-            }
+        }
+        /*分配并存储文本*/
         target->list[count].text =
             (char *) malloc((size_t)((int)strlen(token) + 1));
         MALLOC_CHECK(target->list[count].text);
         strcpy(target->list[count].text, token);
+        /*计算累计权重*/
         target->max += weight;
         target->list[count].weight = target->max;
 
         count += 1;
         } /* while fgets() */
-
+    
+    /*确保读取的项数与期望的 count 一致*/
     if (count != target->count)
         {
         fprintf(stderr, "Read error on dist '%s'\n", name);

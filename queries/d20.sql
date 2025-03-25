@@ -1,9 +1,6 @@
--- $ID$
--- TPC-H/TPC-R Potential Part Promotion Query (Q20)
--- Function Query Definition
--- Approved February 1998
-:x
-:o
+-- using default substitutions
+
+
 select
 	s_name,
 	s_address
@@ -24,8 +21,8 @@ where
 				from
 					lineitem
 				where
-					l_shipdate >= date ':2'
-					and l_shipdate < date ':2' + interval '1' year
+					l_shipdate >= date '1994-01-01'
+					and l_shipdate < date '1994-01-01' + interval '1' year
 				group by
 					l_partkey,
 					l_suppkey
@@ -39,12 +36,12 @@ where
 				from
 					part
 				where
-					p_name like ':1%'
+					p_name like 'forest%'
 			)
 			and ps_availqty > agg_quantity
 	)
 	and s_nationkey = n_nationkey
-	and n_name = ':3'
+	and n_name = 'CANADA'
 order by
 	s_name
 LIMIT 1;

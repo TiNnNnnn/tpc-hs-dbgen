@@ -1,9 +1,6 @@
--- $ID$
--- TPC-H/TPC-R Small-Quantity-Order Revenue Query (Q17)
--- Functional Query Definition
--- Approved February 1998
-:x
-:o
+-- using default substitutions
+
+
 select
 	sum(l_extendedprice) / 7.0 as avg_yearly
 from
@@ -13,7 +10,7 @@ from
 where
 	p_partkey = l_partkey
 	and agg_partkey = l_partkey
-	and p_brand = ':1'
-	and p_container = ':2'
+	and p_brand = 'Brand#23'
+	and p_container = 'MED BOX'
 	and l_quantity < avg_quantity
 LIMIT 1;

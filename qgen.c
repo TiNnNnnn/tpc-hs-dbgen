@@ -147,25 +147,24 @@ strip_comments(char *line)
 void
 qsub(char *qtag, int flags)
 {
-static char *line = NULL,
-    *qpath = NULL;
-FILE *qfp;
-char *cptr,
+    static char *line = NULL, *qpath = NULL;
+    FILE *qfp;
+    char *cptr,
     *mark,
+    /*templete file path*/
     *qroot = NULL;
-
+    /*paser sql id*/
     qnum = atoi(qtag);
-    if (line == NULL)
-        {
+    if (line == NULL){
         line = malloc(BUFSIZ);
         qpath = malloc(BUFSIZ);
         MALLOC_CHECK(line);
         MALLOC_CHECK(qpath);
-        }
+    }
 
     qroot = env_config(QDIR_TAG, QDIR_DFLT);
-    sprintf(qpath, "%s%c%s.sql", 
-		qroot, PATH_SEP, qtag);
+    sprintf(qpath, "%s%c%s.sql", qroot, PATH_SEP, qtag);
+    
     qfp = fopen(qpath, "r");
     OPEN_CHECK(qfp, qpath);
 
@@ -173,30 +172,32 @@ char *cptr,
     varsub(qnum, 0, flags); /* set the variables */
     if (flags & DFLT_NUM)
         fprintf(ofp, SET_ROWCOUNT, rowcnt);
-    while (fgets(line, BUFSIZ, qfp) != NULL)
-        {
+    while (fgets(line, BUFSIZ, qfp) != NULL){
         if (!(flags & COMMENT))
             strip_comments(line);
+        /*parser param line by line*/
         mark = line;
-        while ((cptr = strchr(mark, VTAG)) != NULL)
-            {
+        while ((cptr = strchr(mark, VTAG)) != NULL){
             *cptr = '\0';
              cptr++;
             fprintf(ofp,"%s", mark);
             switch(*cptr)
                 {
+                /*begin work*/
                 case 'b':
                 case 'B':
                     if (!(flags & ANSI))
                         fprintf(ofp,"%s\n", START_TRAN);
                     cptr++;
                     break;
+                /*database*/
                 case 'c':
                 case 'C':
                     if (flags & DBASE)
                         fprintf(ofp, SET_DBASE, db_name);
                     cptr++;
                     break;
+                /*commit work*/
                 case 'e':
                 case 'E':
                     if (!(flags & ANSI))
@@ -244,6 +245,7 @@ char *cptr,
 		case '7':
 		case '8':
 		case '9':
+                    /*var subsition*/
                     varsub(qnum, atoi(cptr), flags & DFLT);
                     while (isdigit(*++cptr));
                     break;
@@ -256,7 +258,7 @@ char *cptr,
             mark=cptr;
             }
         fprintf(ofp,"%s", mark);
-        }
+    }
     fclose(qfp);
     fflush(stdout);
     return;
@@ -382,6 +384,7 @@ process_options(int cnt, char **args)
 int
 setup(void)
 {
+    /*data with ASC-II*/
     asc_date = mk_ascdate();
     read_dist(env_config(DIST_TAG, DIST_DFLT), "p_cntr", &p_cntr_set);
     read_dist(env_config(DIST_TAG, DIST_DFLT), "colors", &colors);
@@ -412,6 +415,8 @@ int main(int ac, char **av)
     char line[LINE_SIZE];
 
     prog = av[0];
+
+    /*Set floating point scaling ratio, default to 1.0**/
     flt_scale = (double)1.0;
     flags = 0;
 	d_path = NULL;
@@ -421,8 +426,10 @@ int main(int ac, char **av)
 	    "-- TPC %s Parameter Substitution (Version %d.%d.%d build %d)\n",
             NAME, VERSION, RELEASE, PATCH, BUILD);
 
+    /*init*/
     setup();
-
+    
+   
     if (!(flags & DFLT))        /* perturb the RNG */
 	    {
 	    if (!(flags & SEED))
@@ -453,7 +460,9 @@ int main(int ac, char **av)
             for (i=optind; i < ac; i++)
                 {
                 char qname[10];
+                /*calualate query id*/
                 sprintf(qname, "%ld", SEQUENCE(snum, atoi(av[i])));
+                /*process query*/
                 qsub(qname, flags);
                 }
         else

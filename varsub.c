@@ -149,6 +149,7 @@ varsub(int qnum, int vnum, int flags)
 			switch(qnum)
 			{
 			case 1:
+				/*"1 <- <int>[60,120]"*/
 				sprintf(param[1], HUGE_FORMAT, UnifInt((DSS_HUGE)60,(DSS_HUGE)120,qnum));
 				param[2][0] = '\0';
 				break;

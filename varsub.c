@@ -154,23 +154,27 @@ varsub(int qnum, int vnum, int flags)
 				param[2][0] = '\0';
 				break;
 			case 2:
+				/*p_size.*/
 				sprintf(param[1], HUGE_FORMAT,
 					UnifInt((DSS_HUGE)P_SIZE_MIN, (DSS_HUGE)P_SIZE_MAX, qnum));
 				pick_str(&p_types_set, qnum, param[3]);
 				ptr = param[3] + (int)strlen(param[3]);
 				while (*(ptr - 1) != ' ') ptr--;
+				/*only need last word*/
 				strcpy(param[2], ptr);
+				/*regin_name*/
 				pick_str(&regions, qnum, param[3]);
 				param[4][0] = '\0';
 				break;
 			case 3:
+				/*c_mktsegment*/
 				pick_str(&c_mseg_set, qnum, param[1]);
 				/*
 				* pick a random offset within the month of march and add the
 				* appropriate magic numbers to position the output functions 
 				* at the start of March '95
 				*/
-            RANDOM(tmp_date, 0, 30, qnum);
+            	RANDOM(tmp_date, 0, 30, qnum);
 				strcpy(param[2], *(asc_date + tmp_date + 1155));
 				param[3][0] = '\0';
 				break;
@@ -303,8 +307,30 @@ varsub(int qnum, int vnum, int flags)
 				param[8][0] = '\0';
 				break;
 			case 23:
+				tmp_date = UnifInt((DSS_HUGE)91, (DSS_HUGE)99,qnum);
+				sprintf(param[1], formats[5], tmp_date);
+				param[2][0] = '\0';
+				break;					
 			case 24:
+				tmp_date = UnifInt((DSS_HUGE)1,(DSS_HUGE)58,qnum);
+				sprintf(param[1],formats[4],
+					93 + tmp_date/12, tmp_date%12 + 1);
+				param[2][0] = '\0';
                 break;
+			case 25:{
+				tmp_date = UnifInt((DSS_HUGE)93,(DSS_HUGE)97,qnum);
+				sprintf(param[1], formats[6], tmp_date);
+				sprintf(param[2], formats[7], 
+                                    UnifInt((DSS_HUGE)2, (DSS_HUGE)9, qnum));
+				sprintf(param[3], HUGE_FORMAT, UnifInt((DSS_HUGE)24, (DSS_HUGE)25, qnum));
+				param[4][0] = '\0';
+				break;
+			}break;
+			case 26:{
+				tmp_date = pick_str(&nations2, qnum, param[1]);
+				while (pick_str(&nations2, qnum, param[2]) == tmp_date);
+				param[3][0] = '\0';
+			}
 			default:
 				fprintf(stderr, 
 					"No variable definitions available for query %d\n", 

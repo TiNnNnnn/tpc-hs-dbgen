@@ -330,7 +330,42 @@ varsub(int qnum, int vnum, int flags)
 				tmp_date = pick_str(&nations2, qnum, param[1]);
 				while (pick_str(&nations2, qnum, param[2]) == tmp_date);
 				param[3][0] = '\0';
-			}
+			}break;
+			case 27:{
+				pick_str(&colors, qnum, param[1]);
+				param[2][0] = '\0';
+			}break;
+			case 28:{
+				pick_str(&colors, qnum, param[1]);
+				param[2][0] = '\0';
+				break;
+			}break;
+			case 29:{
+				sprintf(param[1], HUGE_FORMAT, UnifInt((DSS_HUGE)312, (DSS_HUGE)315, qnum));
+				param[2][0] = '\0';
+			}break;
+			case 30:{
+				pick_str(&nations2, qnum, param[1]);
+				sprintf(param[2], "%11.10f", Q11_FRACTION / flt_scale );
+				param[3][0] = '\0';
+				break;
+			}break;
+			case 31:{
+				tmp_date = pick_str(&l_smode_set, qnum, param[1]);
+				while (tmp_date == pick_str(&l_smode_set, qnum, param[2]));
+				while (tmp_date == pick_str(&l_smode_set, qnum, param[3]));
+				tmp_date = UnifInt((DSS_HUGE)91,(DSS_HUGE)98,qnum);
+				sprintf(param[4], formats[12], tmp_date);
+				param[4][0] = '\0';
+				break;
+			}break;
+			case 32:{
+				tmp_date = pick_str(&l_smode_set, qnum, param[1]);
+				while (tmp_date == pick_str(&l_smode_set, qnum, param[2]));
+				tmp_date = UnifInt((DSS_HUGE)93,(DSS_HUGE)97,qnum);
+				sprintf(param[3], formats[12], tmp_date);
+				param[4][0] = '\0';
+			}break;
 			default:
 				fprintf(stderr, 
 					"No variable definitions available for query %d\n", 

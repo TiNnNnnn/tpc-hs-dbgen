@@ -366,6 +366,97 @@ varsub(int qnum, int vnum, int flags)
 				sprintf(param[3], formats[12], tmp_date);
 				param[4][0] = '\0';
 			}break;
+			case 33:{
+				tmp_date = pick_str(&l_smode_set, qnum, param[1]);
+				while (tmp_date == pick_str(&l_smode_set, qnum, param[2]));
+				tmp_date = UnifInt((DSS_HUGE)93,(DSS_HUGE)97,qnum);
+				sprintf(param[3], formats[12], tmp_date);
+				param[4][0] = '\0';
+			}break;
+			case 34:{
+				pick_str(&q13a, qnum, param[1]);
+				pick_str(&q13b, qnum, param[2]);
+				param[3][0] = '\0';
+				break;
+			}break;
+			case 35:{
+				pick_str(&q13a, qnum, param[1]);
+				pick_str(&q13b, qnum, param[2]);
+				param[3][0] = '\0';
+				break;
+			}break;
+			case 36:{
+				tmp_date = UnifInt((DSS_HUGE)0,(DSS_HUGE)59,qnum);
+				sprintf(param[1],formats[14],
+					93 + tmp_date/12, tmp_date%12 + 1);
+				param[2][0] = '\0';
+				break;
+			}break;
+			case 37:{
+				tmp_date = UnifInt((DSS_HUGE)0,(DSS_HUGE)57,qnum);
+				sprintf(param[1],formats[15],
+					93 + tmp_date/12, tmp_date%12 + 1);
+				param[2][0] = '\0';
+			}break;
+			case 38:{
+				tmp1 = UnifInt((DSS_HUGE)1, (DSS_HUGE)5, qnum); 
+				tmp2 = UnifInt((DSS_HUGE)1, (DSS_HUGE)5, qnum);
+				sprintf(param[1], formats[16], tmp1, tmp2);
+				pick_str(&p_types_set, qnum, param[2]);
+				ptr = param[2] + (int)strlen(param[2]);
+				while (*(--ptr) != ' ');
+				*ptr = '\0';
+				lptr = &sizes[0];
+				permute(lptr,50,qnum);
+				for (i=3; i <= MAX_PARAM; i++)
+					sprintf(param[i], "%ld", sizes[i - 3]);
+			}break;
+			case 39:{
+				param[1][0] = '\0';
+			}break;
+			case 40:{
+				param[1][0] = '\0';
+			}break;
+			case 41:{
+				tmp1 = UnifInt((DSS_HUGE)1, (DSS_HUGE)5, param[1]); 
+				param[2][0] = '\0';
+			}break;
+			case 42:{
+				sprintf(param[1], HUGE_FORMAT, UnifInt((DSS_HUGE)312, (DSS_HUGE)315, qnum));
+				param[2][0] = '\0';
+				break;				
+			}break;
+			case 43:{
+				sprintf(param[1], HUGE_FORMAT, UnifInt((DSS_HUGE)1, (DSS_HUGE)10, qnum));
+				sprintf(param[2], HUGE_FORMAT, UnifInt((DSS_HUGE)10, (DSS_HUGE)20, qnum));
+				sprintf(param[3], HUGE_FORMAT, UnifInt((DSS_HUGE)20, (DSS_HUGE)30, qnum));
+				param[4][0] = '\0';
+				break;
+			}break;
+			case 44:{
+				pick_str(&colors, qnum, param[1]);
+				tmp_date = UnifInt((DSS_HUGE)93,(DSS_HUGE)97,qnum);
+				sprintf(param[2], formats[20], tmp_date);
+				pick_str(&nations2, qnum, param[3]);
+				param[4][0] = '\0';
+				break;
+			}break;
+			case 45:{
+				param[1][0] = '\0';
+				break;
+			}break;
+			case 46:{
+				param[1][0] = '\0';
+				break;
+			}break;
+			case 47:{
+				lptr = &ccode[0];
+				permute(lptr,25, qnum);
+				for (i=0; i <= 7; i++)
+					sprintf(param[i+1], "%ld", 10 + ccode[i]);
+				param[8][0] = '\0';
+				break;
+			}
 			default:
 				fprintf(stderr, 
 					"No variable definitions available for query %d\n", 

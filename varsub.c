@@ -69,7 +69,7 @@ long sizes[50] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,
 				21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,
 				41,42,43,44,45,46,47,48,49,50};
 long ccode[25] = {10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34};
-char *defaults[24][11] =
+char *defaults[25][11] =
 {
     {"90",              NULL,                   NULL,
         NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL},  /* 1 */
@@ -110,6 +110,8 @@ char *defaults[24][11] =
     {"forest", "1994-01-01", "CANADA", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL},  /* 20 */
     {"SAUDI ARABIA", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL},  /* 21 */
     {"13","31","23", "29", "30", "18", "17", NULL, NULL, NULL, NULL},  /* 22 */
+	{"1994-01-01",      ".06",                  "24",
+		NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL},  /* 23 */
     {NULL,NULL,NULL,NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL},  /* UF1 */
     {NULL,NULL,NULL,NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL},  /* UF2 */
 };
@@ -306,11 +308,11 @@ varsub(int qnum, int vnum, int flags)
 					sprintf(param[i+1], "%ld", 10 + ccode[i]);
 				param[8][0] = '\0';
 				break;
-			case 23:
-				tmp_date = UnifInt((DSS_HUGE)91, (DSS_HUGE)99,qnum);
+			case 23:{
+				tmp_date = UnifInt((DSS_HUGE)93, (DSS_HUGE)97,qnum);
 				sprintf(param[1], formats[5], tmp_date);
 				param[2][0] = '\0';
-				break;					
+			}break;					
 			case 24:
 				tmp_date = UnifInt((DSS_HUGE)1,(DSS_HUGE)58,qnum);
 				sprintf(param[1],formats[4],
@@ -324,7 +326,6 @@ varsub(int qnum, int vnum, int flags)
                                     UnifInt((DSS_HUGE)2, (DSS_HUGE)9, qnum));
 				sprintf(param[3], HUGE_FORMAT, UnifInt((DSS_HUGE)24, (DSS_HUGE)25, qnum));
 				param[4][0] = '\0';
-				break;
 			}break;
 			case 26:{
 				tmp_date = pick_str(&nations2, qnum, param[1]);

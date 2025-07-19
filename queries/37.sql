@@ -4,6 +4,7 @@
 -- Approved February 1998
 -- From q15
 :x
+
 create view revenue:s (supplier_no, total_revenue) as
 	select
 		l_suppkey,

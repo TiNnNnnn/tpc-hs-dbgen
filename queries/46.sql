@@ -14,8 +14,8 @@ from
 	orders,
 	nation
 where
-	s_suppkey = l2.l_suppkey
-	and o_orderkey = l2.l_orderkey
+	l1.l_suppkey = s_suppkey
+	and l1.l_orderkey = o_orderkey
 	and o_orderstatus = 'F'
 	and l1.l_receiptdate > l1.l_commitdate
 	and exists (

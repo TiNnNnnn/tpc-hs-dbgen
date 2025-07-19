@@ -342,8 +342,11 @@ varsub(int qnum, int vnum, int flags)
 				break;
 			}break;
 			case 29:{
-				sprintf(param[1], HUGE_FORMAT, UnifInt((DSS_HUGE)312, (DSS_HUGE)315, qnum));
+				tmp_date = UnifInt((DSS_HUGE)1,(DSS_HUGE)24,qnum);
+				sprintf(param[1],formats[10],
+					91 + tmp_date/12, tmp_date%12 + 1);
 				param[2][0] = '\0';
+				break;
 			}break;
 			case 30:{
 				pick_str(&nations2, qnum, param[1]);
@@ -357,7 +360,7 @@ varsub(int qnum, int vnum, int flags)
 				while (tmp_date == pick_str(&l_smode_set, qnum, param[3]));
 				tmp_date = UnifInt((DSS_HUGE)91,(DSS_HUGE)98,qnum);
 				sprintf(param[4], formats[12], tmp_date);
-				param[4][0] = '\0';
+				param[5][0] = '\0';
 				break;
 			}break;
 			case 32:{
@@ -419,7 +422,7 @@ varsub(int qnum, int vnum, int flags)
 				param[1][0] = '\0';
 			}break;
 			case 41:{
-				tmp1 = UnifInt((DSS_HUGE)1, (DSS_HUGE)5, param[1]); 
+				sprintf(param[1], HUGE_FORMAT, UnifInt((DSS_HUGE)1, (DSS_HUGE)5, qnum));
 				param[2][0] = '\0';
 			}break;
 			case 42:{

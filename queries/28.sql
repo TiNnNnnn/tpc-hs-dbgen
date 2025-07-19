@@ -23,7 +23,7 @@ from
 			orders,
 			nation
 		where
-			and ps_suppkey = s_suppkey 
+			ps_partkey = s_suppkey 
 			and ps_partkey = l_partkey
 			and p_partkey = l_partkey
 			and o_orderkey = l_orderkey

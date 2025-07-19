@@ -32,7 +32,7 @@ from
 			and c_nationkey = n1.n_nationkey
 			and (
 				(n1.n_name = ':1' and n2.n_name = ':2')
-				r (n1.n_name = ':2' and n2.n_name = ':1')
+				or (n1.n_name = ':2' and n2.n_name = ':1')
 			)
 			and l_shipdate between date '1995-01-01' and date '1996-12-31'
 	) as shipping

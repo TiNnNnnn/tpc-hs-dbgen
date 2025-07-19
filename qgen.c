@@ -26,7 +26,7 @@
  *           text for TPC-H and TPC-R
  */
 #define DECLARER
-
+#include <sys/time.h>
 #include <stdio.h>
 #include <string.h>
 #if (defined(_POSIX_)||!defined(WIN32))
@@ -407,9 +407,26 @@ setup(void)
     return(0);
 }
 
+void reseed()
+{
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    rndm = tv.tv_sec * 1000 + tv.tv_usec / 1000 + getpid(); 
+    if (rndm < 0)
+        rndm += 2147483647;
+    Seed[0].value = rndm;
+    for (int i = 1; i <= QUERIES_PER_SET; i++) {
+        Seed[0].value = NextRand(Seed[0].value);
+        Seed[i].value = Seed[0].value;
+    }
+    printf("-- reseed using %ld\n", rndm);
+}
+
+
 
 int main(int ac, char **av)
 {
+    printf("begin .....\n");
     int i;
     FILE *ifp;
     char line[LINE_SIZE];
@@ -432,8 +449,13 @@ int main(int ac, char **av)
    
     if (!(flags & DFLT))        /* perturb the RNG */
 	    {
-	    if (!(flags & SEED))
-                rndm = (long)((unsigned)time(NULL));
+	    if (!(flags & SEED)){
+            struct timeval tv;
+            gettimeofday(&tv, NULL);
+            rndm = tv.tv_sec * 1000 + tv.tv_usec / 1000;
+            // rndm = (long)((unsigned)time(NULL));
+        }
+           
 		if (rndm < 0)
 			rndm += 2147483647;
 		Seed[0].value = rndm;
@@ -459,31 +481,41 @@ int main(int ac, char **av)
         if (optind < ac)
             for (i=optind; i < ac; i++)
                 {
-                char qname[10];
-                /*calualate query id*/
-                sprintf(qname, "%ld", SEQUENCE(snum, atoi(av[i])));
-                /*process query*/
-                qsub(qname, flags);
+                    if(i == 0)
+                        continue;
+                    reseed(); 
+                    char qname[10];
+                    /*calualate query id*/
+                    sprintf(qname, "%ld", SEQUENCE(snum, atoi(av[i])));
+                    /*process query*/
+                    qsub(qname, flags);
                 }
-        else
+        else{
             for (i=1; i <= QUERIES_PER_SET; i++)
                 {
-                char qname[10];
-                sprintf(qname, "%ld", SEQUENCE(snum, i));
-                qsub(qname, flags);
+                    reseed(); 
+                    char qname[10];
+                    sprintf(qname, "%ld", SEQUENCE(snum, i));
+                    qsub(qname, flags);
                 }
+        }
     else
-        if (optind < ac)
-            for (i=optind; i < ac; i++)
-                qsub(av[i], flags);   
-        else
-            for (i=1; i <= QUERIES_PER_SET; i++)
-                {
+        if (optind < ac){
+            for (i=optind; i < ac; i++){
+                if(i == 0)
+                    continue;
+                reseed();     
+                qsub(av[i], flags); 
+            }
+        }else{
+            for (i=1; i <= QUERIES_PER_SET; i++){
+                reseed();     
                 char qname[10];
                 sprintf(qname, "%d", i);
                 qsub(qname, flags);
-                }
-    
+            }
+        }
+            
     if (flags & TERMINATE)      /* terminate stream with tfile */
         {
         ifp = fopen(tfile, "r");

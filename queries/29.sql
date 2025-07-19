@@ -6,7 +6,7 @@
 :x
 :o
 select
-	c_custkey,
+	o_custkey,
 	c_name,
 	sum(l_extendedprice * (1 - l_discount)) as revenue,
 	c_acctbal,
